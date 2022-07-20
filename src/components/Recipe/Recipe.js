@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import cookies from "js-cookie";
 import "./Recipe.css";
 
 const AllRecipe = () => {
   const [recipes, setRecipes] = useState([]);
-  const { id } = useParams();
 
   useEffect(() => {
     getAllRecipe();
@@ -22,25 +21,27 @@ const AllRecipe = () => {
     setRecipes(response.data);
   };
   return (
-    <article className="cocktail">
+    <div>
       {recipes.map((recipe) => (
         <>
+        <article className="cocktail">
           <div className="column is-one-quarter" key={recipe.id}>
           <div className="img-container">
             <img src={recipe.url} alt="" />
           </div>
           <div className="cocktail-footer">
             <h2>{recipe.title}</h2>
-            <Link to={`/recipe/${id}`} style={{ color: "#444" }}>
+            <Link to={`/recipe/${recipe.id}`} style={{ color: "#444" }}>
               <h4>
                 Check out the recipe <i className="fa fa-arrow-right"></i>
               </h4>
             </Link>
           </div>
           </div>
+          </article>
         </>
       ))}
-    </article>
+    </div>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link} from "react-router-dom";
 import axios from "axios";
 import cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
@@ -8,7 +8,6 @@ import "../Recipe/Recipe.css"
 
 const UserRecipe = () => {
   const [recipes, setRecipes] = useState([]);
-  const { id } = useParams();
 
   useEffect(() => {
     getAllRecipe();
@@ -47,7 +46,7 @@ const UserRecipe = () => {
           </div>
           <div className="cocktail-footer">
             <h2>{recipe.title}</h2>
-            <Link to={`/recipe/${id}`} style={{ color: "#444" }}>
+            <Link to={`/recipe/${recipe.id}`} style={{ color: "#444" }}>
               <h4>
                 Check out the recipe <i className="fa fa-arrow-right"></i>
               </h4>
