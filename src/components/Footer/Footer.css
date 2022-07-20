@@ -1,0 +1,16 @@
+.footer {
+  background: #444;
+  margin-top: 40px;
+  font-size: 1em;
+  color: white;
+}
+
+.footer-links i {
+  font-size: 2em;
+  margin: 0 5px;
+  color: white;
+}
+
+.column {
+  display: flex;
+}
