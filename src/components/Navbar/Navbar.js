@@ -1,22 +1,30 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { auth } from "../../utils/firebase";
 import { useHistory } from "react-router-dom";
+// import axios from 'axios';
+import cookies from "js-cookie";
+import jwt_decode from "jwt-decode";
 import "./Navbar.css";
 
 const Navbar = () => {
   const history = useHistory();
-  const [firstName, setFirstName] = useState("");
 
-  React.useEffect(() => {
-    auth().onAuthStateChanged(function (user) {
-      if (user) {
-        setFirstName(user.displayName);
+  const Logout = () => {
+    try {
+      cookies.remove("accessToken");
+      history.push("/");
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-        history.push("/recipe");
-      } else console.log("No user is logged in.");
-    });
-  }, [history, firstName]);
+  const isLogin = cookies.get("accessToken");
+  let name;
+  if (isLogin) {
+    const decoded = jwt_decode(isLogin);
+    name = decoded.userName;
+  }
 
   return (
     <header>
@@ -25,36 +33,44 @@ const Navbar = () => {
           <h1 className="logo">
             <i className="fa fa-cutlery"></i> YouCanDoIt
           </h1>
-
-          <ul className="links">
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/features">Recipes</Link>
-            </li>
-            <li>
-              <Link to="/about">About Me</Link>
-            </li>
-          </ul>
-
-          {firstName ? (
-            <Link
-              to="/"
-              onClick={() => {
-                auth().signOut();
-                setFirstName("");
-              }}
-            >
-              {" "}
-              <button className="btn">Sign Out</button>
-            </Link>
+          {isLogin ? (
+            <>
+              <ul className="links">
+                <li>
+                  <Link to="/dashboard">Dashboard</Link>
+                </li>
+                <li>
+                  <Link to="/features">All Recipes</Link>
+                </li>
+              </ul>
+              <div>
+                <label>
+                  Sign in as :<span> {name}</span>
+                </label>
+                <Link to="/" onClick={Logout}>
+                  {" "}
+                  <button className="btn">Sign Out</button>
+                </Link>
+              </div>
+            </>
           ) : (
-            <button className="btn">
-              <Link to="/signin">Sign In</Link>
-            </button>
+            <>
+              <ul className="links">
+                <li>
+                  <Link to="/">Home</Link>
+                </li>
+                <li>
+                  <Link to="/features">Recipes</Link>
+                </li>
+                <li>
+                  <Link to="/about">About Me</Link>
+                </li>
+              </ul>
+              <button className="btn">
+                <Link to="/signin">Sign In</Link>
+              </button>
+            </>
           )}
-          
         </div>
       </nav>
     </header>

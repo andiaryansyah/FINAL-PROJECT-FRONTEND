@@ -45,6 +45,7 @@ a {
   color: #fff;
   background: #FDA50F;
   padding: 8px;
+  margin-left:12px;
   border: none;
   outline: none;
   border: 2px solid transparent;
@@ -59,3 +60,5 @@ a {
 .btn:focus {
   outline: none;
 }
+
+

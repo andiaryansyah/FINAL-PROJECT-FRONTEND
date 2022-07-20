@@ -30,6 +30,7 @@ class SignIn extends Component {
       .then(function (response) {
         cookies.set('accessToken',response.data.accessToken);
         propss.history.push("/dashboard");
+        window.location.reload();
 
       })
       .catch(function (error) {

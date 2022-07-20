@@ -4,7 +4,7 @@ import axios from "axios";
 import cookies from "js-cookie";
 import "./Recipe.css";
 
-const Recipe = () => {
+const AllRecipe = () => {
   const [recipes, setRecipes] = useState([]);
   const { id } = useParams();
 
@@ -25,7 +25,6 @@ const Recipe = () => {
     <article className="cocktail">
       {recipes.map((recipe) => (
         <>
-        {console.log(recipe)}
           <div className="column is-one-quarter" key={recipe.id}>
           <div className="img-container">
             <img src={recipe.url} alt="" />
@@ -45,4 +44,4 @@ const Recipe = () => {
   );
 };
 
-export default Recipe;
+export default AllRecipe;
