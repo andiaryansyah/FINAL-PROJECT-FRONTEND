@@ -5,8 +5,8 @@ import cookies from 'js-cookie'
 import jwtDecode from 'jwt-decode';
 import './AddRecipe.css';
 
-class RecipeInput extends Component {
-  
+class RecipeUpdate extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -14,7 +14,8 @@ class RecipeInput extends Component {
       category: '',
       instructions: "",
       ingredients: [''],
-      img: ''
+      img: '',
+      id: this.props.match.params.id
     };
     
   }
@@ -24,6 +25,7 @@ class RecipeInput extends Component {
     const decoded = jwtDecode(token);
     return {decoded,token};
   }  
+
 
   handleChange = (e) => {
     if (e.target.name === "img"){
@@ -37,13 +39,13 @@ class RecipeInput extends Component {
     const {ingredients} = this.state;
     this.setState({ingredients: [...ingredients, '']});
   }
-  
+
   onDeleteIngredient = (ingredient) => {
     const deleteIng = [...this.state.ingredients];
     deleteIng.splice(ingredient, 1);
     this.setState({ingredients: deleteIng})
 }
-
+  
   handleChangeIng = (e) => {
     const index = Number(e.target.name.split('-')[1]);
     const ingredients = this.state.ingredients.map((ing, i) => (
@@ -52,9 +54,31 @@ class RecipeInput extends Component {
     this.setState({ingredients});
   }
   
-  handleSubmit = (e) => {
+  getRecipeById = () => {
+    axios
+    .get(`http://localhost:3000/api/users/${this.decodeJWT().decoded.userId}/recipes/10`, {
+      headers:{
+        "authorization":`Bearer ${this.decodeJWT().token}`
+    }
+    })
+    .then(function (response) {
+      this.setState({
+        title: response.data.title,
+        category: '',
+        instructions: '',
+        ingredients: [''],
+        img: ''
+      })
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  handleUpdate = (e) => {
     e.preventDefault();
     this.decodeJWT();
+    const user_id = this.decodeJWT().decoded.userId
     const formData = new FormData();
         formData.append("file", this.state.img)
         formData.append("title", this.state.title)
@@ -62,12 +86,13 @@ class RecipeInput extends Component {
         formData.append("instructions", this.state.instructions)
         formData.append("ingredients", this.state.ingredients)
         try {
-            axios.post(`http://localhost:3000/api/users/${this.decodeJWT().decoded.userId}/recipes`, formData, {
+            axios.post(`http://localhost:3000/api/users/${user_id}/recipes/3`, formData, {
                 headers:{
                     "authorization":`Bearer ${this.decodeJWT().token}`,
                     "content-type":"multipart/form-data"
                 }
             });
+            // navigate("/dashboard")
         } catch (error) {
             console.log(error);
         }
@@ -82,10 +107,9 @@ class RecipeInput extends Component {
   }
   
   render() {
-    const {title, category, instructions, ingredients} = this.state;
+    const {title, category, instructions, ingredients, url} = this.state;
     const {onClose} = this.props;
-    
-        let inputs = ingredients.map((ing, i) => (
+    let inputs = ingredients.map((ing, i) => (
       <div
         className="recipe-form-line"
         key={`ingredient-${i}`}
@@ -105,8 +129,8 @@ class RecipeInput extends Component {
     
     return (
       <div className="recipe-form-container">
-        <form className="recipe-form" onSubmit={this.handleSubmit}>
-          <Link to="dashboard">
+        <form className="recipe-form" onSubmit={this.handleUpdate}>
+          <Link to="/dashboard">
             <button type="button" className="close-button" onClick={onClose}>
               X
             </button>
@@ -132,10 +156,10 @@ class RecipeInput extends Component {
           </div>
           <div className="recipe-form-line">
             <label htmlFor="recipe-img-input">Image Url</label>
-            <input type="file" id="img" name="img" placeholder="Enter Picture.." onChange={this.handleChange} />
+            <input type="file" id="img" name="img" placeholder="Enter Picture.." src={url} onChange={this.handleChange} />
           </div>
           <button type="submit" className="buttons" style={{ alignSelf: "flex-end", marginRight: 0 }}>
-            SAVE
+            Update
           </button>
         </form>
       </div>
@@ -143,4 +167,4 @@ class RecipeInput extends Component {
   }
 }
 
-export default RecipeInput;
+export default RecipeUpdate;

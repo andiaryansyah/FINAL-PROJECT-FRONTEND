@@ -1,98 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Spinner from "../../components/Spinner/Spinner";
+import axios from "axios";
 import "./SingleRecipe.css";
 
-export default function SingleRecipe() {
-  const { id } = useParams();
+const SingleRecipe = () => {
+ 
+  const { id, user_id } = useParams();
 
   const [loading, setLoading] = useState(false);
 
   const [recipes, setRecipes] = useState([]);
 
-  React.useEffect(() => {
-    setLoading(true);
-    async function getRecipe() {
-      try {
-        const response = await fetch(
-          `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
-        );
-        const data = await response.json();
+  useEffect(() => {
+    getAllByUserId();
+    setLoading(false);
+  }, []);
 
-        if (data.meals) {
-          const {
-            strMeal: name,
-            strMealThumb: image,
-            strCategory: category,
-            strIngredient1,
-            strIngredient2,
-            strIngredient3,
-            strIngredient4,
-            strIngredient5,
-            strIngredient6,
-            strIngredient7,
-            strIngredient8,
-            strIngredient9,
-            strIngredient10,
-            strIngredient11,
-            strIngredient12,
-            strIngredient13,
-            strIngredient14,
-            strIngredient15,
-            strInstructions: instructions,
-          } = data.meals[0];
-          const ingredients = [
-            strIngredient1,
-            strIngredient2,
-            strIngredient3,
-            strIngredient4,
-            strIngredient5,
-            strIngredient6,
-            strIngredient7,
-            strIngredient8,
-            strIngredient9,
-            strIngredient10,
-            strIngredient11,
-            strIngredient12,
-            strIngredient13,
-            strIngredient14,
-            strIngredient15,
-          ];
-          const newRecipe = {
-            name,
-            image,
-            category,
-            ingredients,
-            instructions,
-          };
-          setRecipes(newRecipe);
-        } else {
-          setRecipes(null);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-      setLoading(false);
-    }
-    getRecipe();
-  }, [id]);
+  const getAllByUserId = async () => {
+
+    const response = await axios.get(`http://localhost:3000/api/users/${user_id}/recipes/${id}`);
+    setRecipes(response.data);
+  }; 
+
   if (loading) {
     return <Spinner />;
   }
   if (!recipes) {
     return <h2 className="section-title">No recipe to display.</h2>;
   } else {
-    const { name, image, category, ingredients, instructions } = recipes;
+    const { title, url, category, ingredients , instructions } = recipes;
+    const arrIngredients = ingredients?.split(",")
 
     return (
       <div className="recipe_container">
         <div className="recipe_pic">
-          <img src={image} alt={name} />
+          <img src={url} alt="" />
         </div>
 
         <div className="single_recipe">
           <div className="heading">
-            <h1>{name}</h1>
+            <h1>{title}</h1>
           </div>
           <div className="text">
             <h4>
@@ -102,8 +50,8 @@ export default function SingleRecipe() {
             <br></br>
             <h4>Ingredients :</h4>
             <div>
-              {ingredients &&
-                ingredients.map((item, index) => {
+            {arrIngredients &&
+                arrIngredients.map((item, index) => {
                   return (
                     <div key={index}>
                       <p>{item}</p>
@@ -115,10 +63,14 @@ export default function SingleRecipe() {
             <h4>
               <span className="drink-data">Instructions :</span>
             </h4>
-            <p>{instructions}</p>
+            <div style={{ width:"550px" }}>
+              <p>{instructions}</p>
+            </div>
           </div>
         </div>
       </div>
     );
   }
 }
+
+export default SingleRecipe;

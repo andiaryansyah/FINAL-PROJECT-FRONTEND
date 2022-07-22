@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import cookies from "js-cookie";
 import "./Recipe.css";
 
 const AllRecipe = () => {
@@ -12,14 +11,13 @@ const AllRecipe = () => {
   }, []);
 
   const getAllRecipe = async () => {
-    const token = cookies.get("accessToken");
-    const response = await axios.get("http://localhost:3000/api/recipes", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    // const token = cookies.get("accessToken");
+    // const decoded = jwt_decode(token);
+    // setId(decoded.userId);
+    const response = await axios.get("http://localhost:3000/api/recipes");
     setRecipes(response.data);
   };
+  
   return (
     <div>
       {recipes.map((recipe) => (
@@ -31,7 +29,7 @@ const AllRecipe = () => {
           </div>
           <div className="cocktail-footer">
             <h2>{recipe.title}</h2>
-            <Link to={`/recipe/${recipe.id}`} style={{ color: "#444" }}>
+            <Link to={`/users/${recipe.user_id}/recipe/${recipe.id}`} style={{ color: "#444" }}>
               <h4>
                 Check out the recipe <i className="fa fa-arrow-right"></i>
               </h4>

@@ -64,29 +64,29 @@ class SignIn extends Component {
                   name="password"
                 />
                 <div id="signup-fullname-contaner" style={{display:'flex', justifyContent:'space-between'}} >
-                  <div>
+                  {/* <div>
                     <p>
                       {" "}
                       <Link style={{ color: "cyan" }} to="/resetpass">
                         Forget Password ?
                       </Link>
                     </p>
-                  </div>
+                  </div> */}
                   <div >
-                    <p>
+                    <p> Do not have account ?
                       {" "}
                       <Link style={{ color: "cyan" }} to="/signup">
-                        Create Account ?
+                        Sign Up 
                       </Link>
                     </p>
                   </div>
                 </div>
-                <p>
+                {/* <p>
                   Demo Dashboard{" "}
                   <Link style={{ color: "cyan" }} to="/dashboard">
                     Here
                   </Link>
-                </p>
+                </p> */}
                 <br></br>
               </div>
               <button id="signin-btn">Sign In</button>
