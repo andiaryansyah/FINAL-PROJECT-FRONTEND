@@ -35,6 +35,29 @@ class RecipeUpdate extends Component {
   }
   }
   
+  getRecipeById = () => {
+    axios
+    .get(`http://localhost:3000/api/users/${this.decodeJWT().decoded.userId}/recipes/${this.state.id}`, {
+      headers:{
+        "authorization":`Bearer ${this.decodeJWT().token}`
+    }
+    })
+    .then(response => this.setState({
+      title: response.data.title,
+      category: response.data.category,
+      instructions: response.data.instructions,
+      ingredients: [response.data.ingredients],
+      img: response.data.url
+    }))
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  componentDidMount () {
+      this.getRecipeById();
+  }
+
   handleNewIngredient = (e) => {
     const {ingredients} = this.state;
     this.setState({ingredients: [...ingredients, '']});
@@ -54,26 +77,7 @@ class RecipeUpdate extends Component {
     this.setState({ingredients});
   }
   
-  getRecipeById = () => {
-    axios
-    .get(`http://localhost:3000/api/users/${this.decodeJWT().decoded.userId}/recipes/10`, {
-      headers:{
-        "authorization":`Bearer ${this.decodeJWT().token}`
-    }
-    })
-    .then(function (response) {
-      this.setState({
-        title: response.data.title,
-        category: '',
-        instructions: '',
-        ingredients: [''],
-        img: ''
-      })
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-  }
+  
 
   handleUpdate = (e) => {
     e.preventDefault();
@@ -86,13 +90,13 @@ class RecipeUpdate extends Component {
         formData.append("instructions", this.state.instructions)
         formData.append("ingredients", this.state.ingredients)
         try {
-            axios.post(`http://localhost:3000/api/users/${user_id}/recipes/3`, formData, {
+            axios.put(`http://localhost:3000/api/users/${user_id}/recipes/${this.state.id}`, formData, {
                 headers:{
                     "authorization":`Bearer ${this.decodeJWT().token}`,
                     "content-type":"multipart/form-data"
                 }
             });
-            // navigate("/dashboard")
+          this.props.history.push('/dashboard')
         } catch (error) {
             console.log(error);
         }
@@ -107,7 +111,8 @@ class RecipeUpdate extends Component {
   }
   
   render() {
-    const {title, category, instructions, ingredients, url} = this.state;
+    const {title, category, instructions, ingredients, img} = this.state;
+    console.log(img)
     const {onClose} = this.props;
     let inputs = ingredients.map((ing, i) => (
       <div
@@ -156,7 +161,7 @@ class RecipeUpdate extends Component {
           </div>
           <div className="recipe-form-line">
             <label htmlFor="recipe-img-input">Image Url</label>
-            <input type="file" id="img" name="img" placeholder="Enter Picture.." src={url} onChange={this.handleChange} />
+            <input type="file" id="img" name="img" placeholder="Enter Picture.." src={img} onChange={this.handleChange} />
           </div>
           <button type="submit" className="buttons" style={{ alignSelf: "flex-end", marginRight: 0 }}>
             Update

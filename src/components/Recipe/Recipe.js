@@ -22,7 +22,7 @@ const AllRecipe = () => {
     <div>
       {recipes.map((recipe) => (
         <>
-        <article className="cocktail">
+        <div className="cocktail">
           <div className="column is-one-quarter" key={recipe.id}>
           <div className="img-container">
             <img src={recipe.url} alt="" />
@@ -36,7 +36,7 @@ const AllRecipe = () => {
             </Link>
           </div>
           </div>
-          </article>
+          </div>
         </>
       ))}
     </div>

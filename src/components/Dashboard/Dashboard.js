@@ -4,7 +4,7 @@ import axios from "axios";
 import cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 import "./Dashboard.css";
-import "../Recipe/Recipe.css";
+// import "../Recipe/Recipe.css";
 
 const UserRecipe = () => {
   const [recipes, setRecipes] = useState([]);
@@ -64,7 +64,7 @@ const UserRecipe = () => {
 
         {recipes.map((recipe) => (
           <>
-            <div className="row row-cols-3">
+            <div>
               <div className="card" key={recipe.id}>
                 <div className="img-container">
                   <img src={recipe.url} alt="" />
